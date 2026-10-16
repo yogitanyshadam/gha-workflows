@@ -1,0 +1,46 @@
+
+name: 03 - Runners
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/03-runners.yml'
+
+jobs:
+  inspect-runner:
+    name: Run on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+
+    steps:
+      - name: Show runner information
+        env:
+          RUNNER_OS_NAME: ${{ runner.os }}
+          RUNNER_ARCH: ${{ runner.arch }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          echo "Runner OS: $RUNNER_OS_NAME"
+          echo "Architecture: $RUNNER_ARCH"
+          echo "Repository: $REPOSITORY"
+
+      - name: Linux-specific command
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          echo "Running a Linux command"
+          uname -a
+          pwd
+
+      - name: Windows-specific command
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Write-Output "Running a PowerShell command"
+          Get-Location
+          Get-Date
