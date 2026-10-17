@@ -1,52 +1,35 @@
-
 name: 02 - Events and Triggers
-
 on:
-  # Run on pushes to main or feature branches
   push:
-    branches:
-      - main
-      - 'feature/**'
+    branches: [main, 'feature/**']
     paths:
       - '.github/workflows/**'
       - 'scripts/**'
-
-  # Run when a pull request targets main
   pull_request:
-    branches:
-      - main
-
-  # Allow manual execution
+    branches: [main]
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Choose a learning environment'
+        description: Choose a learning environment
         required: true
         type: choice
-        options:
-          - dev
-          - staging
+        options: [dev, staging]
       greeting:
-        description: 'Message to print'
+        description: Message to print
         required: false
-        default: 'Hello from GitHub Actions'
+        default: Hello from GitHub Actions
         type: string
-
-  # Run daily at 09:00 UTC
   schedule:
     - cron: '0 9 * * *'
-
 jobs:
   inspect-event:
     runs-on: ubuntu-latest
-
     steps:
       - name: Show event information
         run: |
           echo "Event: $GITHUB_EVENT_NAME"
           echo "Ref: $GITHUB_REF"
           echo "Repository: $GITHUB_REPOSITORY"
-
       - name: Show manual inputs
         if: github.event_name == 'workflow_dispatch'
         env:
@@ -55,7 +38,6 @@ jobs:
         run: |
           echo "Environment: $SELECTED_ENV"
           echo "Greeting: $GREETING"
-
       - name: Scheduled run message
         if: github.event_name == 'schedule'
         run: echo "This run was triggered by the schedule."
